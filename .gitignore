@@ -1,0 +1,6 @@
+*.local
+*.exe
+*.identcache
+/Tests/Win32
+__history
+__recovery
