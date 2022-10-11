@@ -20,6 +20,7 @@ type
     class operator Implicit(const AValue: TNutrientData): Double;
 
     class operator Multiply(const Left: TNutrientData; Right: Integer): TNutrientData;
+    class operator Multiply(const Left: TNutrientData; Right: Double): TNutrientData;
     class operator Divide(const Left, Right: TNutrientData): TNutrientData;
 
     class operator Equal(const Left: TNutrientData; Right: Double): Boolean;
@@ -80,6 +81,13 @@ class operator TNutrientData.Multiply(const Left: TNutrientData;
   Right: Integer): TNutrientData;
 begin
   if Left.FHasValue then
+    Result := Left.FValue * Right;
+end;
+
+class operator TNutrientData.Multiply(const Left: TNutrientData;
+  Right: Double): TNutrientData;
+begin
+  if Left.HasValue then
     Result := Left.FValue * Right;
 end;
 
