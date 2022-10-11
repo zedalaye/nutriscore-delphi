@@ -6,11 +6,11 @@ uses
   Nutriscore.Nutrient, Nutriscore.Score;
 
 type
-  TNutriscoreClasses = (nscSpecific, nscCheese, nscFats, nscDrinks, nscWater);
-  TNutriscore = (nsUnknown, nsA, nsB, nsC, nsD, nsE);
+  TNutriscoreClasses = (nscSpecific, nscCheese, nscFats, nscDrinks, nscWater, nscBeers);
+  TNutriscore = (nsUnknown, nsA, nsB, nsC, nsD, nsE, nsNotApplicable);
 
 const
-  NUTRISCORES: array[TNutriscore] of Char = ('?', 'A', 'B', 'C', 'D', 'E');
+  NUTRISCORES: array[TNutriscore] of Char = ('?', 'A', 'B', 'C', 'D', 'E', 'X');
 
 type
   TNutrients = record
@@ -34,6 +34,8 @@ type
     class function NewDrinks(const energy, sugar, fvnp: TNutrientData): TNutrients; static;
     // nscWater
     class function NewWater: TNutrients; static;
+    // nscBeers
+    class function NewBeers: TNutrients; static;
   end;
 
 {$if defined(DEBUG)}
@@ -115,6 +117,10 @@ type
   protected
     function Nutriscore(const _Score: TScore): TNutriscore; override;
   end;
+  TNutriscoreBeers = class(TNutriscoreDrinks)
+  protected
+    function Nutriscore(const _Score: TScore): TNutriscore; override;
+  end;
 
 function Nutriscore(ProductClass: TNutriscoreClasses; const Nutrients: TNutrients
   {$if defined(DEBUG)}; var Debug: TScoreDebug{$endif}): TNutriscore;
@@ -128,7 +134,7 @@ const
     TNutriscoreSpecific,
     TNutriscoreCheese,
     TNutriscoreFats,
-    TNutriscoreDrinks, TNutriscoreWater
+    TNutriscoreDrinks, TNutriscoreWater, TNutriscoreBeers
   );
 begin
   var K := KLASSES[ProductClass].Create;
@@ -414,6 +420,13 @@ begin
   Result := nsA;
 end;
 
+{ TNutriscoreBeers }
+
+function TNutriscoreBeers.Nutriscore(const _Score: TScore): TNutriscore;
+begin
+  Result := nsNotApplicable;
+end;
+
 { TNutriscoreFats }
 
 function TNutriscoreFats.SaturatedFatPercent(const Value, Total: TNutrientData): TNutrientData;
@@ -511,6 +524,11 @@ end;
 class function TNutrients.NewWater: TNutrients;
 begin
   // Water don't need any nutrient data to get a A score.
+end;
+
+class function TNutrients.NewBeers: TNutrients;
+begin
+  // Beers and Alcoholized drinks don't need any nutrient data to get a X (not applicable) score.
 end;
 
 end.
